@@ -6,10 +6,14 @@
 //  Copyright © 2016年 chenli. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct API{
-    static let apiHost = "http://api.douban.com"
+    static let apiHost = "http://api.douban.com/v2/"
     
-    static let movies = "\(apiHost)/v2/movie/top251"
+    static let movies = "\(apiHost)movie/top250"
+    static let searchMovies = "\(apiHost)movie/search"
 }
+
+let SCREEN_WIDTH:CGFloat = UIScreen.mainScreen().bounds.size.width
+let SCREEN_HEIGHT:CGFloat = UIScreen.mainScreen().bounds.size.height

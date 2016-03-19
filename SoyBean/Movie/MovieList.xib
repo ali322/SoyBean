@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MovieListViewController" customModule="SoyBean" customModuleProvider="target">
             <connections>
+                <outlet property="tableview" destination="ldj-6s-iNP" id="Ev4-Tp-B9B"/>
                 <outlet property="view" destination="iN0-l3-epB" id="u29-rR-1zi"/>
             </connections>
         </placeholder>
@@ -14,7 +15,22 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ldj-6s-iNP">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="fdU-6U-0hb"/>
+                    </connections>
+                </tableView>
+            </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="ldj-6s-iNP" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7KG-aQ-fln"/>
+                <constraint firstAttribute="bottom" secondItem="ldj-6s-iNP" secondAttribute="bottom" constant="44" id="Sat-OK-PgZ"/>
+                <constraint firstAttribute="trailing" secondItem="ldj-6s-iNP" secondAttribute="trailing" id="osl-xV-R4J"/>
+                <constraint firstItem="ldj-6s-iNP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="pSh-sg-K2u"/>
+            </constraints>
             <point key="canvasLocation" x="431" y="397"/>
         </view>
     </objects>
