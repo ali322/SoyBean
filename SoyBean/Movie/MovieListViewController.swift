@@ -11,10 +11,17 @@ import UIKit
 class MovieListViewController: UIViewController{
     @IBOutlet weak var tableview:UITableView!
     
-    var searchController:UISearchController!
     
     var movies:[Movie] = []
     var searchResult:[Movie] = []
+    
+    var searchController:UISearchController!
+    var pageIndexOfMovies = 0
+    var pageIndexOfSearch = 0
+    var q:String = ""
+    
+    var pullUpVC = PullUpViewController()
+    
     var movieService = MovieService()
     let movieCellIndentify:String = "movieCell"
     
@@ -30,6 +37,7 @@ class MovieListViewController: UIViewController{
         // Do any additional setup after loading the view.
         tableview.registerNib(UINib(nibName: "MovieCell", bundle: nil), forCellReuseIdentifier: movieCellIndentify)
         tableview.dataSource = self
+        tableview.delegate = self
         tableview.estimatedRowHeight = 100
         tableview.rowHeight = UITableViewAutomaticDimension
         
@@ -40,16 +48,24 @@ class MovieListViewController: UIViewController{
         searchController.hidesNavigationBarDuringPresentation = true
         searchController.dimsBackgroundDuringPresentation = false
         let searchBar = searchController.searchBar
-        searchBar.delegate = self
+        //        searchBar.delegate = self
+        //        searchBar.hidden = true
         //        searchBar.prompt = " "
-        //        searchBar.showsCancelButton = false
         searchBar.sizeToFit()
         searchBar.placeholder = "请输入电影信息"
         searchController.searchResultsUpdater = self
         tableview.tableHeaderView = searchBar
         
+        self.addChildViewController(pullUpVC)
+        tableview.tableFooterView = pullUpVC.view
+        
         self.navigationItem.title = "TOP250"
     }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .Default
+    }
+    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -71,6 +87,7 @@ extension MovieListViewController:UISearchResultsUpdating{
             guard q != "" && q.utf8.count > 3 else {
                 return
             }
+            self.q = q
             movieService.searchMovies(q)
         }
     }
@@ -85,7 +102,6 @@ extension MovieListViewController:UISearchBarDelegate{
 
 extension MovieListViewController:UITableViewDataSource{
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print(searchController.active,searchResult.count,movies.count)
         if searchController.active {
             return searchResult.count
         }
@@ -102,4 +118,24 @@ extension MovieListViewController:UITableViewDataSource{
     }
 }
 
+extension MovieListViewController:UITableViewDelegate{
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        //        print(scrollView.contentSize.height - scrollView.frame.height,scrollView.contentOffset.y)
+        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.frame.height + 50{
+            print("draging")
+            pullUpVC.status = .Dragging
+        }else{
+            pullUpVC.status = .Inactive
+        }
+    }
+    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.frame.height + 50{
+            if searchController.active{
+                movieService.searchMovies(self.q,tag: "",pageIndex:pageIndexOfSearch)
+            }else{
+                movieService.top250Movies(pageIndexOfMovies)
+            }
+        }
+    }
+}
 

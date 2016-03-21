@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A60255F244657433FAF6FB1A /* Pods_SoyBeanTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 612F0F91E8BA864674825A83 /* Pods_SoyBeanTests.framework */; };
+		D414410F1CA0102400C57922 /* LoadMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D414410E1CA0102400C57922 /* LoadMore.swift */; };
 		D41E5CC61C9C1FD10072AF3E /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = D41E5CC51C9C1FD10072AF3E /* Podfile */; };
 		D41E5CC81C9C20620072AF3E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CC71C9C20620072AF3E /* MainViewController.swift */; };
 		D41E5CCB1C9C20DB0072AF3E /* MovieListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CCA1C9C20DB0072AF3E /* MovieListViewController.swift */; };
@@ -55,6 +56,7 @@
 		B458FE4345DD028157B994D6 /* Pods-SoyBeanUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SoyBeanUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SoyBeanUITests/Pods-SoyBeanUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C25BED14DC9F0327315FBCAD /* Pods_SoyBeanUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SoyBeanUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D07BC638A18B034EBEFC1A93 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D414410E1CA0102400C57922 /* LoadMore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadMore.swift; sourceTree = "<group>"; };
 		D41E5CC51C9C1FD10072AF3E /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		D41E5CC71C9C20620072AF3E /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		D41E5CCA1C9C20DB0072AF3E /* MovieListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieListViewController.swift; sourceTree = "<group>"; };
@@ -134,6 +136,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		D414410D1CA0100E00C57922 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				D414410E1CA0102400C57922 /* LoadMore.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		D41E5CC91C9C20AF0072AF3E /* Movie */ = {
 			isa = PBXGroup;
 			children = (
@@ -193,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				D41E5CD11C9C26710072AF3E /* Book */,
+				D414410D1CA0100E00C57922 /* Common */,
 				D41E5CCE1C9C21300072AF3E /* Lib */,
 				D41E5CC91C9C20AF0072AF3E /* Movie */,
 				D4D07A6D1C9C1E13001924B0 /* AppDelegate.swift */,
@@ -492,6 +503,7 @@
 			files = (
 				D41E5CD71C9C276F0072AF3E /* MovieService.swift in Sources */,
 				D41E5CCB1C9C20DB0072AF3E /* MovieListViewController.swift in Sources */,
+				D414410F1CA0102400C57922 /* LoadMore.swift in Sources */,
 				D4CFC9D21C9D24A000A73FAD /* MovieModel.swift in Sources */,
 				D4CFC9D01C9D244C00A73FAD /* MovieCell.swift in Sources */,
 				D4D07A6E1C9C1E13001924B0 /* AppDelegate.swift in Sources */,
