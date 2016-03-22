@@ -11,7 +11,8 @@ import Cartography
 
 enum PullUpControlStyle:Int{
     case Inactive
-    case Dragging
+    case Active
+    case Loading
 }
 
 class PullUpViewController:UIViewController{
@@ -24,16 +25,13 @@ class PullUpViewController:UIViewController{
     var activityIndicator:UIActivityIndicatorView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, 50)
-        self.view.backgroundColor  = UIColor.whiteColor()
-        prompt = UILabel(frame: CGRectMake(0,0,self.view.bounds.width,44))
-        //        prompt.backgroundColor = UIColor.grayColor()
-        prompt.textColor = UIColor.redColor()
-        prompt.text = "上拉加载"
+        self.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, 40)
+        self.view.backgroundColor  = UIColor.redColor()
+        prompt = UILabel(frame: CGRectMake(0,0,self.view.bounds.width,30))
+        prompt.font = UIFont.systemFontOfSize(13)
         self.view.addSubview(prompt)
         
         activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-        //        activityIndicator.center = prompt.center
         self.view.addSubview(activityIndicator)
         constrain(prompt,activityIndicator){ prompt,activityIndicator in
             prompt.height == 30
@@ -43,14 +41,21 @@ class PullUpViewController:UIViewController{
         }
     }
     func updateUI(){
-        switch status{
-        case .Dragging:
-            prompt.text = "松开加载更多"
+        //        print(status)
+        if status == .Loading{
+            prompt.text = "加载中"
             activityIndicator.startAnimating()
-        case .Inactive:
-            prompt.text = "上拉加载"
-            activityIndicator.stopAnimating()
         }
+        if status == .Inactive{
+            prompt.text = ""
+            if activityIndicator.isAnimating(){
+                activityIndicator.stopAnimating()
+            }
+        }
+        if status == .Active{
+            prompt.text = "上拉加载"
+        }
+        
     }
 }
 

@@ -29,9 +29,9 @@ struct MovieService{
     }
     
     func top250Movies(pageIndex:Int = 0){
-        let start = pageIndex * 5
+        let start = pageIndex * 6
         //        print("start: \(start)")
-        Alamofire.request(.GET, API.movies,parameters:["start":start,"count":5]).responseData { (response)-> Void in
+        Alamofire.request(.GET, API.movies,parameters:["start":start,"count":6]).responseData { (response)-> Void in
             if response.result.error != nil{
                 self.listDelegate?.findMoviesFail(response.result.error as! MovieError)
             }else{
@@ -41,8 +41,8 @@ struct MovieService{
     }
     
     func searchMovies(q:String = "",tag:String = "",pageIndex:Int = 0){
-        let start = pageIndex * 5
-        Alamofire.request(.GET, API.searchMovies, parameters: ["q":q,"tag":tag,"start":start,"count":5]).responseData { (response) -> Void in
+        let start = pageIndex * 6
+        Alamofire.request(.GET, API.searchMovies, parameters: ["q":q,"tag":tag,"start":start,"count":6]).responseData { (response) -> Void in
             if response.result.error != nil{
                 self.listDelegate?.findMoviesFail(MovieError.ListError)
             }else{
@@ -97,6 +97,7 @@ extension MovieListViewController:MovieListDelegate{
             }else{
                 self.movies += _movies
             }
+            pullUpVC.status = .Inactive
             tableview.reloadData()
         }
     }

@@ -35,35 +35,38 @@ class MovieListViewController: UIViewController{
         //            Util.alert("提示", message: "接口异常")
         //        }
         // Do any additional setup after loading the view.
+        //        tableview.backgroundColor = UIColor.greenColor()
         tableview.registerNib(UINib(nibName: "MovieCell", bundle: nil), forCellReuseIdentifier: movieCellIndentify)
         tableview.dataSource = self
         tableview.delegate = self
-        tableview.estimatedRowHeight = 100
-        tableview.rowHeight = UITableViewAutomaticDimension
+        //        tableview.estimatedRowHeight = 100
+        //        tableview.rowHeight = UITableViewAutomaticDimension
         
-        //        let searchResultVC = UIViewController()
-        //        searchResultVC.view.frame = self.view.bounds
-        //        searchResultVC.view.backgroundColor = UIColor.redColor()
         searchController = UISearchController(searchResultsController:nil)
-        searchController.hidesNavigationBarDuringPresentation = true
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         let searchBar = searchController.searchBar
-        //        searchBar.delegate = self
         //        searchBar.hidden = true
         //        searchBar.prompt = " "
         searchBar.sizeToFit()
         searchBar.placeholder = "请输入电影信息"
         searchController.searchResultsUpdater = self
-        tableview.tableHeaderView = searchBar
+        //        tableview.tableHeaderView = searchBar
+        //        self.addChildViewController(searchController)
         
-        self.addChildViewController(pullUpVC)
+        //        self.addChildViewController(pullUpVC)
         tableview.tableFooterView = pullUpVC.view
         
         self.navigationItem.title = "TOP250"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "showSearch")
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .Default
+    }
+    
+    func showSearch(){
+        self.presentViewController(self.searchController, animated: true, completion: nil)
     }
     
     
@@ -119,23 +122,27 @@ extension MovieListViewController:UITableViewDataSource{
 }
 
 extension MovieListViewController:UITableViewDelegate{
-    func scrollViewDidScroll(scrollView: UIScrollView) {
-        //        print(scrollView.contentSize.height - scrollView.frame.height,scrollView.contentOffset.y)
-        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.frame.height + 50{
-            print("draging")
-            pullUpVC.status = .Dragging
-        }else{
-            pullUpVC.status = .Inactive
-        }
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        //        if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
+        pullUpVC.status = .Active
+        //        }
     }
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if scrollView.contentOffset.y > scrollView.contentSize.height - scrollView.frame.height + 50{
+        //        print("didend dragging")
+        if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
+            pullUpVC.status = .Loading
             if searchController.active{
                 movieService.searchMovies(self.q,tag: "",pageIndex:pageIndexOfSearch)
             }else{
                 movieService.top250Movies(pageIndexOfMovies)
             }
         }
+    }
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
+    }
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 100
     }
 }
 
