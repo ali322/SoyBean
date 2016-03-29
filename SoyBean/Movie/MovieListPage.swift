@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieListViewController: UIViewController{
+class MovieListPage: UIViewController{
     @IBOutlet weak var tableview:UITableView!
     
     
@@ -24,6 +24,8 @@ class MovieListViewController: UIViewController{
     
     var movieService = MovieService()
     let movieCellIndentify:String = "movieCell"
+    
+    var detailPage = MovieDetailPage(nibName:"MovieDetail",bundle: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,7 +86,7 @@ class MovieListViewController: UIViewController{
     }
 }
 
-extension MovieListViewController:UISearchResultsUpdating{
+extension MovieListPage:UISearchResultsUpdating{
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         if let q = searchController.searchBar.text{
             guard q != "" && q.utf8.count > 3 else {
@@ -96,14 +98,14 @@ extension MovieListViewController:UISearchResultsUpdating{
     }
 }
 
-extension MovieListViewController:UISearchBarDelegate{
+extension MovieListPage:UISearchBarDelegate{
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchController.active = false
         tableview.reloadData()
     }
 }
 
-extension MovieListViewController:UITableViewDataSource{
+extension MovieListPage:UITableViewDataSource{
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if searchController.active {
             return searchResult.count
@@ -121,7 +123,7 @@ extension MovieListViewController:UITableViewDataSource{
     }
 }
 
-extension MovieListViewController:UITableViewDelegate{
+extension MovieListPage:UITableViewDelegate{
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         //        if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
         pullUpVC.status = .Active
@@ -143,6 +145,12 @@ extension MovieListViewController:UITableViewDelegate{
     }
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 100
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let movie = movies[indexPath.row]
+        detailPage.id = movie.id
+        self.navigationController?.pushViewController(detailPage, animated: true)
     }
 }
 

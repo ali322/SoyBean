@@ -13,7 +13,7 @@ class MainViewController: UITabBarController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let movieListVC = MovieListViewController(nibName:"MovieList",bundle: nil)
+        let movieListVC = MovieListPage(nibName:"MovieList",bundle: nil)
         let movieNavigationVC = UINavigationController(rootViewController: movieListVC)
         let bookListVC = BookListViewController(nibName:"BookList",bundle:nil)
         self.setViewControllers([

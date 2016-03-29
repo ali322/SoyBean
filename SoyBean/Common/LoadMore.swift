@@ -26,7 +26,7 @@ class PullUpViewController:UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.frame = CGRectMake(0, 0, SCREEN_WIDTH, 40)
-        self.view.backgroundColor  = UIColor.redColor()
+        //        self.view.backgroundColor  = UIColor.redColor()
         prompt = UILabel(frame: CGRectMake(0,0,self.view.bounds.width,30))
         prompt.font = UIFont.systemFontOfSize(13)
         self.view.addSubview(prompt)

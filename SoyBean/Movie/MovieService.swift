@@ -20,8 +20,14 @@ protocol MovieListDelegate:class{
     func findMoviesFail(err:MovieError)
 }
 
+protocol MovieDetailDelegate:class{
+    func getMovieSuccess(data:NSData?)
+    func getMovieFail(err:MovieError)
+}
+
 struct MovieService{
     var listDelegate:MovieListDelegate?
+    var detailDelegate:MovieDetailDelegate?
     var alamofireManager:Manager{
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         let manager = Alamofire.Manager(configuration:config)
@@ -50,9 +56,19 @@ struct MovieService{
             }
         }
     }
+    
+    func movieDetail(id:String){
+        Alamofire.request(.GET,"\(API.movie)/\(id)").responseData { (response) -> Void in
+            if response.result.error != nil{
+                self.detailDelegate?.getMovieFail(MovieError.DetailError(id: -1))
+            }else{
+                self.detailDelegate?.getMovieSuccess(response.result.value)
+            }
+        }
+    }
 }
 
-extension MovieListViewController:MovieListDelegate{
+extension MovieListPage:MovieListDelegate{
     func findMoviesSuccess(data: NSData?) {
         if searchController.active{
             self.pageIndexOfSearch += 1
@@ -63,33 +79,7 @@ extension MovieListViewController:MovieListDelegate{
             var _movies:[Movie] = []
             let jsonData:JSON = JSON(data: _data)
             for (_,subject):(String,JSON) in jsonData["subjects"]{
-                let _id = subject["id"].stringValue
-                let _title = subject["title"].stringValue
-                let _originalTitle = subject["originalTitle"].stringValue
-                let _alt = subject["alt"].stringValue
-                let _rate = subject["rating"]["average"].floatValue
-                var _images:Dictionary<String,String> = [:]
-                for (key,value):(String,JSON) in subject["images"]{
-                    _images[key] = value.stringValue
-                }
-                let _year = subject["year"].stringValue
-                var _casts:[Creator] = []
-                for (_,json):(String,JSON) in subject["casts"]{
-                    var _avatars:Dictionary<String,String> = [:]
-                    for (k,v):(String,JSON) in json["avatars"]{
-                        _avatars[k] = v.stringValue
-                    }
-                    let _creator = Creator(
-                        id:json["id"].stringValue,
-                        name:json["name"].stringValue,
-                        alt:json["alt"].stringValue,
-                        avatars:_avatars
-                    )
-                    _casts.append(_creator)
-                }
-                let _movie = Movie(id:_id,title:_title,originalTitle: _originalTitle,
-                    alt: _alt,rate: _rate,images: _images,year: _year,casts: _casts
-                )
+                let _movie = Movie.initWith(subject)
                 _movies.append(_movie)
             }
             if searchController.active{
@@ -104,5 +94,18 @@ extension MovieListViewController:MovieListDelegate{
     
     func findMoviesFail(err: MovieError) {
         print("find error")
+    }
+}
+
+extension MovieDetailPage:MovieDetailDelegate{
+    func getMovieSuccess(data: NSData?) {
+        if let _data = data{
+            let jsonData = JSON(data:_data)
+            let _movie = Detail.initWith(jsonData)
+            self.movie = _movie
+        }
+    }
+    func getMovieFail(err: MovieError) {
+        print(err)
     }
 }

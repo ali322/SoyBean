@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 enum Genres:String{
     case Cartoon = "动画"
@@ -35,6 +36,27 @@ struct Movie{
     let year:String
     let casts:[Creator]
     //    let directors:[Creator]
+    
+    static func initWith(json:JSON)->Movie{
+        
+        let _id = json["id"].stringValue
+        let _title = json["title"].stringValue
+        let _originalTitle = json["originalTitle"].stringValue
+        let _alt = json["alt"].stringValue
+        let _rate = json["rating"]["average"].floatValue
+        var _images:Dictionary<String,String> = [:]
+        for (key,value):(String,JSON) in json["images"]{
+            _images[key] = value.stringValue
+        }
+        let _year = json["year"].stringValue
+        var _casts = [Creator]()
+        for (_,json) in json["casts"]{
+            let _creator = Creator.initWith(json)
+            _casts.append(_creator)
+        }
+        let _movie = Movie(id: _id, title: _title, originalTitle: _originalTitle, alt: _alt, rate: _rate, images: _images, year: _year, casts: _casts)
+        return _movie
+    }
 }
 
 struct Creator{
@@ -42,4 +64,51 @@ struct Creator{
     let name:String
     let alt:String
     let avatars:Dictionary<String,String>
+    
+    static func initWith(json:JSON)->Creator{
+        var _avatars:Dictionary<String,String> = [:]
+        for (k,v):(String,JSON) in json["avatars"]{
+            _avatars[k] = v.stringValue
+        }
+        let _creator = Creator(
+            id:json["id"].stringValue,
+            name:json["name"].stringValue,
+            alt:json["alt"].stringValue,
+            avatars:_avatars
+        )
+        return _creator
+    }
+}
+
+struct Detail{
+    let id:String
+    let title:String
+    let originalTitle:String
+    let alt:String
+    let rate:Float
+    let images:[String:String]
+    let year:String
+    let casts:[Creator]
+    //    let directors:[Creator]
+    
+    static func initWith(json:JSON)->Movie{
+        
+        let _id = json["id"].stringValue
+        let _title = json["title"].stringValue
+        let _originalTitle = json["originalTitle"].stringValue
+        let _alt = json["alt"].stringValue
+        let _rate = json["rating"]["average"].floatValue
+        var _images:Dictionary<String,String> = [:]
+        for (key,value):(String,JSON) in json["images"]{
+            _images[key] = value.stringValue
+        }
+        let _year = json["year"].stringValue
+        var _casts = [Creator]()
+        for (_,json) in json["casts"]{
+            let _creator = Creator.initWith(json)
+            _casts.append(_creator)
+        }
+        let _movie = Movie(id: _id, title: _title, originalTitle: _originalTitle, alt: _alt, rate: _rate, images: _images, year: _year, casts: _casts)
+        return _movie
+    }
 }
