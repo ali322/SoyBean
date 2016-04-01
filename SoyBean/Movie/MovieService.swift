@@ -101,7 +101,7 @@ extension MovieDetailPage:MovieDetailDelegate{
     func getMovieSuccess(data: NSData?) {
         if let _data = data{
             let jsonData = JSON(data:_data)
-            let _movie = Detail.initWith(jsonData)
+            let _movie = MovieDetail.initWith(jsonData)
             self.movie = _movie
         }
     }

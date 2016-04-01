@@ -148,7 +148,13 @@ extension MovieListPage:UITableViewDelegate{
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let movie = movies[indexPath.row]
+        var movie:Movie
+        if searchController.active{
+            movie = searchResult[indexPath.row]
+            
+        }else{
+            movie = movies[indexPath.row]
+        }
         detailPage.id = movie.id
         self.navigationController?.pushViewController(detailPage, animated: true)
     }

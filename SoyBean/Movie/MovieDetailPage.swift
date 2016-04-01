@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieDetailPage: UIViewController {
+class MovieDetailPage: UIViewController{
     var id:String?{
         didSet{
             if let _id = id{
@@ -16,7 +16,7 @@ class MovieDetailPage: UIViewController {
             }
         }
     }
-    var movie:Movie?{
+    var movie:MovieDetail?{
         didSet{
             self.updateUI()
         }
@@ -24,12 +24,21 @@ class MovieDetailPage: UIViewController {
     
     @IBOutlet weak var cover:UIImageView!
     @IBOutlet weak var movietitle:UILabel!
+    @IBOutlet weak var rating:UILabel!
+    @IBOutlet weak var countries:UILabel!
+    @IBOutlet weak var durations:UILabel!
+    @IBOutlet weak var year:UILabel!
+    @IBOutlet weak var casts:UILabel!
+    @IBOutlet weak var summary:UITextView!
+    @IBOutlet weak var photos:UIImageView!
     
     var movieService = MovieService()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         movieService.detailDelegate = self
+        if id != nil{
+            movieService.movieDetail(id!)
+        }
         
     }
     
@@ -43,7 +52,43 @@ class MovieDetailPage: UIViewController {
             })
             movietitle.text = _movie.title
             
+            var _casts:[String] = []
+            for actor in _movie.casts{
+                _casts.append(actor.name)
+            }
+            let _castsStr = _casts.joinWithSeparator("/")
+            casts.attributedText = attributedStringFor("演员:\(_castsStr)")
+            rating.attributedText = attributedStringFor("评分:\(_movie.rate)")
+            year.attributedText = attributedStringFor("上映:\(_movie.year)")
+            let _countriesStr = _movie.countries.joinWithSeparator("/")
+            countries.attributedText = attributedStringFor("国家:\(_countriesStr)")
+            let _durationsStr = _movie.durations.joinWithSeparator("/")
+            durations.attributedText = attributedStringFor("片长:\(_durationsStr)")
+            summary.text = "\(_movie.summary)"
+            
+            var _photos = [UIImage]()
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                var photodatas = [NSData]()
+                for _photo in _movie.photos{
+                    let photodata = NSData(contentsOfURL: NSURL(string: _photo.image)!)!
+                    photodatas.append(photodata)
+                }
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    for photodata in photodatas{
+                        _photos.append(UIImage(data: photodata)!)
+                    }
+                    self.photos.animationImages = _photos
+                })
+            })
+            photos.animationRepeatCount = 1
+            
             self.navigationItem.title = _movie.title
         }
+    }
+    
+    func attributedStringFor(labelText:String)->NSMutableAttributedString{
+        let attrStr = NSMutableAttributedString(string: labelText)
+        attrStr.addAttribute(NSKernAttributeName, value: 5, range: NSRange.init(location: 2, length: 1))
+        return attrStr
     }
 }

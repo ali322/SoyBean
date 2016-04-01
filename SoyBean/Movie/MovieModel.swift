@@ -80,7 +80,7 @@ struct Creator{
     }
 }
 
-struct Detail{
+struct MovieDetail{
     let id:String
     let title:String
     let originalTitle:String
@@ -88,10 +88,14 @@ struct Detail{
     let rate:Float
     let images:[String:String]
     let year:String
+    let countries:[String]
+    let durations:[String]
     let casts:[Creator]
     //    let directors:[Creator]
+    let photos:[MoviePhoto]
+    let summary:String
     
-    static func initWith(json:JSON)->Movie{
+    static func initWith(json:JSON)->MovieDetail{
         
         let _id = json["id"].stringValue
         let _title = json["title"].stringValue
@@ -103,12 +107,47 @@ struct Detail{
             _images[key] = value.stringValue
         }
         let _year = json["year"].stringValue
+        var _countries:[String] = []
+        for (_,country):(String,JSON) in json["countries"]{
+            _countries.append(country.stringValue)
+        }
+        var _durations:[String] = []
+        for (_,duration):(String,JSON) in json["durations"]{
+            _durations.append(duration.stringValue)
+        }
         var _casts = [Creator]()
         for (_,json) in json["casts"]{
             let _creator = Creator.initWith(json)
             _casts.append(_creator)
         }
-        let _movie = Movie(id: _id, title: _title, originalTitle: _originalTitle, alt: _alt, rate: _rate, images: _images, year: _year, casts: _casts)
+        let _summary = json["summary"].stringValue
+        
+        var _photos = [MoviePhoto]()
+        for (_,v):(String,JSON) in json["photos"] {
+            let _photo = MoviePhoto.initWith(v)
+            _photos.append(_photo)
+        }
+        let _movie = MovieDetail(id: _id, title: _title, originalTitle: _originalTitle, alt: _alt, rate: _rate, images: _images, year: _year, countries: _countries,durations: _durations,casts: _casts,photos: _photos,summary: _summary)
         return _movie
+    }
+}
+
+struct MoviePhoto{
+    let id:String
+    let cover:String
+    let alt:String
+    let image:String
+    let thumb:String
+    let icon:String
+    
+    static func initWith(json:JSON)->MoviePhoto{
+        let _id = json["id"].stringValue
+        let _cover = json["cover"].stringValue
+        let _thumb = json["thumb"].stringValue
+        let _image = json["image"].stringValue
+        let _icon = json["icon"].stringValue
+        let _alt = json["alt"].stringValue
+        let _photo = MoviePhoto(id: _id, cover: _cover, alt: _alt, image: _image, thumb: _thumb, icon: _icon)
+        return _photo
     }
 }
