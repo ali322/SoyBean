@@ -70,11 +70,7 @@ struct MovieService{
 
 extension MovieListPage:MovieListDelegate{
     func findMoviesSuccess(data: NSData?) {
-        if searchController.active{
-            self.pageIndexOfSearch += 1
-        }else{
-            self.pageIndexOfMovies += 1
-        }
+        self.pageIndexOfMovies += 1
         if let _data = data{
             var _movies:[Movie] = []
             let jsonData:JSON = JSON(data: _data)
@@ -82,11 +78,7 @@ extension MovieListPage:MovieListDelegate{
                 let _movie = Movie.initWith(subject)
                 _movies.append(_movie)
             }
-            if searchController.active{
-                self.searchResult += _movies
-            }else{
-                self.movies += _movies
-            }
+            self.movies += _movies
             pullUpVC.status = .Inactive
             tableview.reloadData()
         }
@@ -95,6 +87,27 @@ extension MovieListPage:MovieListDelegate{
     func findMoviesFail(err: MovieError) {
         print("find error")
     }
+}
+
+extension MovieSearchResult:MovieListDelegate{
+    func findMoviesSuccess(data: NSData?) {
+        self.pageIndexOfMovies += 1
+        if let _data = data{
+            var _movies:[Movie] = []
+            let jsonData:JSON = JSON(data: _data)
+            for (_,subject):(String,JSON) in jsonData["subjects"]{
+                let _movie = Movie.initWith(subject)
+                _movies.append(_movie)
+            }
+            self.movies += _movies
+            pullUpVC.status = .Inactive
+            tableview.reloadData()
+        }
+    }
+    func findMoviesFail(err: MovieError) {
+        print(err)
+    }
+    
 }
 
 extension MovieDetailPage:MovieDetailDelegate{

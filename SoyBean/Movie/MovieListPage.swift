@@ -13,11 +13,11 @@ class MovieListPage: UIViewController{
     
     
     var movies:[Movie] = []
-    var searchResult:[Movie] = []
     
     var searchController:UISearchController!
+    var searchResultController = MovieSearchResult(nibName:"MovieSearchResult",bundle: nil)
+    
     var pageIndexOfMovies = 0
-    var pageIndexOfSearch = 0
     var q:String = ""
     
     var pullUpVC = PullUpViewController()
@@ -44,7 +44,7 @@ class MovieListPage: UIViewController{
         //        tableview.estimatedRowHeight = 100
         //        tableview.rowHeight = UITableViewAutomaticDimension
         
-        searchController = UISearchController(searchResultsController:nil)
+        searchController = UISearchController(searchResultsController:searchResultController)
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         let searchBar = searchController.searchBar
@@ -52,7 +52,8 @@ class MovieListPage: UIViewController{
         //        searchBar.prompt = " "
         searchBar.sizeToFit()
         searchBar.placeholder = "请输入电影信息"
-        searchController.searchResultsUpdater = self
+        searchController.searchResultsUpdater = searchResultController
+        searchResultController.delegate = self
         //        tableview.tableHeaderView = searchBar
         //        self.addChildViewController(searchController)
         
@@ -86,17 +87,6 @@ class MovieListPage: UIViewController{
     }
 }
 
-extension MovieListPage:UISearchResultsUpdating{
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        if let q = searchController.searchBar.text{
-            guard q != "" && q.utf8.count > 3 else {
-                return
-            }
-            self.q = q
-            movieService.searchMovies(q)
-        }
-    }
-}
 
 extension MovieListPage:UISearchBarDelegate{
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
@@ -107,23 +97,16 @@ extension MovieListPage:UISearchBarDelegate{
 
 extension MovieListPage:UITableViewDataSource{
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.active {
-            return searchResult.count
-        }
         return movies.count
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableview.dequeueReusableCellWithIdentifier(movieCellIndentify, forIndexPath: indexPath) as! MovieCell
-        if searchController.active{
-            cell.movie = searchResult[indexPath.row]
-        }else{
-            cell.movie = movies[indexPath.row]
-        }
+        cell.movie = movies[indexPath.row]
         return cell
     }
 }
 
-extension MovieListPage:UITableViewDelegate{
+extension MovieListPage:UITableViewDelegate,SearchResultDelegate{
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         //        if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
         pullUpVC.status = .Active
@@ -133,11 +116,7 @@ extension MovieListPage:UITableViewDelegate{
         //        print("didend dragging")
         if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
             pullUpVC.status = .Loading
-            if searchController.active{
-                movieService.searchMovies(self.q,tag: "",pageIndex:pageIndexOfSearch)
-            }else{
-                movieService.top250Movies(pageIndexOfMovies)
-            }
+            movieService.top250Movies(pageIndexOfMovies)
         }
     }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -149,13 +128,12 @@ extension MovieListPage:UITableViewDelegate{
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var movie:Movie
-        if searchController.active{
-            movie = searchResult[indexPath.row]
-            
-        }else{
-            movie = movies[indexPath.row]
-        }
-        detailPage.id = movie.id
+        movie = movies[indexPath.row]
+        jumpToDetailPage(movie.id)
+    }
+    
+    func jumpToDetailPage(id: String) {
+        detailPage.id = id
         self.navigationController?.pushViewController(detailPage, animated: true)
     }
 }
