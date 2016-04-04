@@ -54,10 +54,7 @@ class MovieListPage: UIViewController{
         searchBar.placeholder = "请输入电影信息"
         searchController.searchResultsUpdater = searchResultController
         searchResultController.delegate = self
-        //        tableview.tableHeaderView = searchBar
-        //        self.addChildViewController(searchController)
         
-        //        self.addChildViewController(pullUpVC)
         tableview.tableFooterView = pullUpVC.view
         
         self.navigationItem.title = "TOP250"
