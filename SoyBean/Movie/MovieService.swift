@@ -70,7 +70,7 @@ struct MovieService{
 
 extension MovieListPage:MovieListDelegate{
     func findMoviesSuccess(data: NSData?) {
-        self.pageIndexOfMovies += 1
+        var listData = dataProvider.getData()
         if let _data = data{
             var _movies:[Movie] = []
             let jsonData:JSON = JSON(data: _data)
@@ -78,7 +78,9 @@ extension MovieListPage:MovieListDelegate{
                 let _movie = Movie.initWith(subject)
                 _movies.append(_movie)
             }
-            self.movies += _movies
+            listData.pageIndex += 1
+            listData.movies += _movies
+            dataProvider.setData(listData)
             pullUpVC.status = .Inactive
             tableview.reloadData()
         }

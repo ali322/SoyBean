@@ -52,8 +52,14 @@ extension MovieSearchResult:UISearchResultsUpdating{
                 return
             }
             self.q = q
-            movieService.searchMovies(q)
+            //            movieService.searchMovies(q)
         }
+    }
+}
+
+extension MovieSearchResult:UISearchBarDelegate{
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        movieService.searchMovies(q)
     }
 }
 

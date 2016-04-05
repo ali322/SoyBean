@@ -8,16 +8,38 @@
 
 import UIKit
 
+enum MovieListDataType{
+    case Top250
+    case SearchResult
+    
+}
+
+struct MovieListData{
+    var movies = [Movie]()
+    var pageIndex = 0
+}
+
+struct MovieListDataProvider{
+    
+    var data:[MovieListData] = Array<MovieListData>.init(count: 2, repeatedValue: MovieListData())
+    var dataType:MovieListDataType = .Top250
+    
+    func getData()->MovieListData{
+        return self.data[dataType.hashValue]
+    }
+    mutating func setData(data:MovieListData){
+        self.data[dataType.hashValue] = data
+    }
+}
+
 class MovieListPage: UIViewController{
     @IBOutlet weak var tableview:UITableView!
     
-    
-    var movies:[Movie] = []
+    var dataProvider = MovieListDataProvider()
     
     var searchController:UISearchController!
     var searchResultController = MovieSearchResult(nibName:"MovieSearchResult",bundle: nil)
     
-    var pageIndexOfMovies = 0
     var q:String = ""
     
     var pullUpVC = PullUpViewController()
@@ -32,19 +54,19 @@ class MovieListPage: UIViewController{
         
         //        do{
         movieService.listDelegate = self
+        dataProvider.dataType = .Top250
+        //        self.listData = top250
+        //        self.dataSource = top250DataSource
         movieService.top250Movies()
         //        }catch MovieError.ListError{
         //            Util.alert("提示", message: "接口异常")
         //        }
         // Do any additional setup after loading the view.
-        //        tableview.backgroundColor = UIColor.greenColor()
         tableview.registerNib(UINib(nibName: "MovieCell", bundle: nil), forCellReuseIdentifier: movieCellIndentify)
         tableview.dataSource = self
         tableview.delegate = self
-        //        tableview.estimatedRowHeight = 100
-        //        tableview.rowHeight = UITableViewAutomaticDimension
         
-        searchController = UISearchController(searchResultsController:searchResultController)
+        searchController = UISearchController(searchResultsController:nil)
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
         let searchBar = searchController.searchBar
@@ -52,8 +74,8 @@ class MovieListPage: UIViewController{
         //        searchBar.prompt = " "
         searchBar.sizeToFit()
         searchBar.placeholder = "请输入电影信息"
-        searchController.searchResultsUpdater = searchResultController
-        searchResultController.delegate = self
+        searchBar.delegate = self
+        searchController.searchResultsUpdater = self
         
         tableview.tableFooterView = pullUpVC.view
         
@@ -66,6 +88,8 @@ class MovieListPage: UIViewController{
     }
     
     func showSearch(){
+        dataProvider.dataType = .SearchResult
+        tableview.reloadData()
         self.presentViewController(self.searchController, animated: true, completion: nil)
     }
     
@@ -82,38 +106,53 @@ class MovieListPage: UIViewController{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }
 
+extension MovieListPage:UISearchResultsUpdating{
+    func updateSearchResultsForSearchController(searchController: UISearchController) {
+        if let q = searchController.searchBar.text{
+            guard q != "" && q.utf8.count > 3 else {
+                return
+            }
+            self.q = q
+        }
+    }
+}
 
 extension MovieListPage:UISearchBarDelegate{
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        movieService.searchMovies(q)
+    }
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchController.active = false
+        dataProvider.dataType = .Top250
         tableview.reloadData()
     }
 }
 
 extension MovieListPage:UITableViewDataSource{
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
+        return dataProvider.getData().movies.count
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableview.dequeueReusableCellWithIdentifier(movieCellIndentify, forIndexPath: indexPath) as! MovieCell
-        cell.movie = movies[indexPath.row]
+        let cell = tableView.dequeueReusableCellWithIdentifier("movieCell", forIndexPath: indexPath) as! MovieCell
+        cell.movie = dataProvider.getData().movies[indexPath.row]
         return cell
     }
 }
 
 extension MovieListPage:UITableViewDelegate,SearchResultDelegate{
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        //        if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
-        pullUpVC.status = .Active
-        //        }
+        if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
+            pullUpVC.status = .Active
+        }
     }
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        //        print("didend dragging")
+        //            print("didend dragging")
         if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
             pullUpVC.status = .Loading
-            movieService.top250Movies(pageIndexOfMovies)
+            movieService.top250Movies(dataProvider.getData().pageIndex)
         }
     }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -125,7 +164,7 @@ extension MovieListPage:UITableViewDelegate,SearchResultDelegate{
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var movie:Movie
-        movie = movies[indexPath.row]
+        movie = dataProvider.getData().movies[indexPath.row]
         jumpToDetailPage(movie.id)
     }
     
