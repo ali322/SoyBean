@@ -39,7 +39,7 @@ struct MovieService{
         //        print("start: \(start)")
         Alamofire.request(.GET, API.movies,parameters:["start":start,"count":6]).responseData { (response)-> Void in
             if response.result.error != nil{
-                self.listDelegate?.findMoviesFail(response.result.error as! MovieError)
+                self.listDelegate?.findMoviesFail(MovieError.ListError)
             }else{
                 self.listDelegate?.findMoviesSuccess(response.result.value)
             }
@@ -70,7 +70,7 @@ struct MovieService{
 
 extension MovieListPage:MovieListDelegate{
     func findMoviesSuccess(data: NSData?) {
-        var listData = dataProvider.getData()
+        var listData = dataProvider.data
         if let _data = data{
             var _movies:[Movie] = []
             let jsonData:JSON = JSON(data: _data)
@@ -80,7 +80,7 @@ extension MovieListPage:MovieListDelegate{
             }
             listData.pageIndex += 1
             listData.movies += _movies
-            dataProvider.setData(listData)
+            dataProvider.data = listData
             pullUpVC.status = .Inactive
             tableview.reloadData()
         }
@@ -89,27 +89,6 @@ extension MovieListPage:MovieListDelegate{
     func findMoviesFail(err: MovieError) {
         print("find error")
     }
-}
-
-extension MovieSearchResult:MovieListDelegate{
-    func findMoviesSuccess(data: NSData?) {
-        self.pageIndexOfMovies += 1
-        if let _data = data{
-            var _movies:[Movie] = []
-            let jsonData:JSON = JSON(data: _data)
-            for (_,subject):(String,JSON) in jsonData["subjects"]{
-                let _movie = Movie.initWith(subject)
-                _movies.append(_movie)
-            }
-            self.movies += _movies
-            pullUpVC.status = .Inactive
-            tableview.reloadData()
-        }
-    }
-    func findMoviesFail(err: MovieError) {
-        print(err)
-    }
-    
 }
 
 extension MovieDetailPage:MovieDetailDelegate{

@@ -8,37 +8,36 @@
 
 import UIKit
 
-enum MovieListDataType{
-    case Top250
-    case SearchResult
-    
-}
-
-struct MovieListData{
-    var movies = [Movie]()
-    var pageIndex = 0
-}
-
 struct MovieListDataProvider{
-    
-    var data:[MovieListData] = Array<MovieListData>.init(count: 2, repeatedValue: MovieListData())
-    var dataType:MovieListDataType = .Top250
-    
-    func getData()->MovieListData{
-        return self.data[dataType.hashValue]
+    enum DataType:Int{
+        case Top250
+        case SearchResult
     }
-    mutating func setData(data:MovieListData){
-        self.data[dataType.hashValue] = data
+    var dataType:DataType = .Top250
+    
+    struct DataRow{
+        var movies = [Movie]()
+        var pageIndex = 0
+    }
+    
+    var dataRows = Array<DataRow>.init(count: 2, repeatedValue: DataRow())
+    
+    var data:DataRow{
+        get{
+            return self.dataRows[dataType.hashValue]
+        }
+        set{
+            self.dataRows[dataType.hashValue] = newValue
+        }
     }
 }
 
-class MovieListPage: UIViewController{
+class MovieListPage: UIViewController,UINavigationBarDelegate{
     @IBOutlet weak var tableview:UITableView!
     
     var dataProvider = MovieListDataProvider()
     
     var searchController:UISearchController!
-    var searchResultController = MovieSearchResult(nibName:"MovieSearchResult",bundle: nil)
     
     var q:String = ""
     
@@ -51,12 +50,9 @@ class MovieListPage: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         //        do{
         movieService.listDelegate = self
         dataProvider.dataType = .Top250
-        //        self.listData = top250
-        //        self.dataSource = top250DataSource
         movieService.top250Movies()
         //        }catch MovieError.ListError{
         //            Util.alert("提示", message: "接口异常")
@@ -96,10 +92,10 @@ class MovieListPage: UIViewController{
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        if searchController.active{
-            searchController.active = false
-            searchController.searchBar.removeFromSuperview()
-        }
+        //        if searchController.active{
+        //            searchController.active = false
+        //            searchController.searchBar.removeFromSuperview()
+        //        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -112,7 +108,7 @@ class MovieListPage: UIViewController{
 extension MovieListPage:UISearchResultsUpdating{
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         if let q = searchController.searchBar.text{
-            guard q != "" && q.utf8.count > 3 else {
+            guard q != "" && q.utf8.count > 1 else {
                 return
             }
             self.q = q
@@ -123,6 +119,7 @@ extension MovieListPage:UISearchResultsUpdating{
 extension MovieListPage:UISearchBarDelegate{
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         movieService.searchMovies(q)
+        searchController.active = false
     }
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchController.active = false
@@ -133,16 +130,16 @@ extension MovieListPage:UISearchBarDelegate{
 
 extension MovieListPage:UITableViewDataSource{
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataProvider.getData().movies.count
+        return dataProvider.data.movies.count
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("movieCell", forIndexPath: indexPath) as! MovieCell
-        cell.movie = dataProvider.getData().movies[indexPath.row]
+        cell.movie = dataProvider.data.movies[indexPath.row]
         return cell
     }
 }
 
-extension MovieListPage:UITableViewDelegate,SearchResultDelegate{
+extension MovieListPage:UITableViewDelegate{
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
             pullUpVC.status = .Active
@@ -152,7 +149,7 @@ extension MovieListPage:UITableViewDelegate,SearchResultDelegate{
         //            print("didend dragging")
         if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
             pullUpVC.status = .Loading
-            movieService.top250Movies(dataProvider.getData().pageIndex)
+            movieService.top250Movies(dataProvider.data.pageIndex)
         }
     }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -164,7 +161,10 @@ extension MovieListPage:UITableViewDelegate,SearchResultDelegate{
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var movie:Movie
-        movie = dataProvider.getData().movies[indexPath.row]
+        if searchController.active{
+            searchController.active = false
+        }
+        movie = dataProvider.data.movies[indexPath.row]
         jumpToDetailPage(movie.id)
     }
     
