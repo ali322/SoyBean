@@ -30,6 +30,13 @@ struct MovieListDataProvider{
             self.dataRows[dataType.hashValue] = newValue
         }
     }
+    
+    mutating func purgeData(){
+        var _data = self.data
+        _data.movies.removeAll()
+        _data.pageIndex = 0
+        self.data = _data
+    }
 }
 
 class MovieListPage: UIViewController,UINavigationBarDelegate{
@@ -48,11 +55,14 @@ class MovieListPage: UIViewController,UINavigationBarDelegate{
     
     var detailPage = MovieDetailPage(nibName:"MovieDetail",bundle: nil)
     
+    var rightBarBtn:UIBarButtonItem!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        rightBarBtn = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "showSearch")
+        self.toggleSearchBar(true)
         //        do{
         movieService.listDelegate = self
-        dataProvider.dataType = .Top250
         movieService.top250Movies()
         //        }catch MovieError.ListError{
         //            Util.alert("提示", message: "接口异常")
@@ -75,8 +85,6 @@ class MovieListPage: UIViewController,UINavigationBarDelegate{
         
         tableview.tableFooterView = pullUpVC.view
         
-        self.navigationItem.title = "TOP250"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "showSearch")
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -84,18 +92,30 @@ class MovieListPage: UIViewController,UINavigationBarDelegate{
     }
     
     func showSearch(){
-        dataProvider.dataType = .SearchResult
+        searchController.active = true
+        toggleSearchBar()
         tableview.reloadData()
-        self.presentViewController(self.searchController, animated: true, completion: nil)
+        //        self.presentViewController(self.searchController, animated: true, completion: nil)
+    }
+    
+    func toggleSearchBar(disabled:Bool = false){
+        if disabled{
+            dataProvider.dataType = .Top250
+            navigationItem.titleView = nil
+            navigationItem.title = "Top250"
+            navigationItem.rightBarButtonItem = rightBarBtn
+            
+        }else{
+            dataProvider.dataType = .SearchResult
+            navigationItem.titleView = searchController.searchBar
+            navigationItem.title = "关键字:\(q)"
+            navigationItem.rightBarButtonItem = nil
+        }
     }
     
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        //        if searchController.active{
-        //            searchController.active = false
-        //            searchController.searchBar.removeFromSuperview()
-        //        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -108,6 +128,11 @@ class MovieListPage: UIViewController,UINavigationBarDelegate{
 extension MovieListPage:UISearchResultsUpdating{
     func updateSearchResultsForSearchController(searchController: UISearchController) {
         if let q = searchController.searchBar.text{
+            if q == "" && dataProvider.dataType == .SearchResult && dataProvider.data.movies.count > 0{
+                //                print("purge")
+                dataProvider.purgeData()
+                tableview.reloadData()
+            }
             guard q != "" && q.utf8.count > 1 else {
                 return
             }
@@ -123,8 +148,11 @@ extension MovieListPage:UISearchBarDelegate{
     }
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchController.active = false
-        dataProvider.dataType = .Top250
+        self.toggleSearchBar()
         tableview.reloadData()
+    }
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchBar.text = q
     }
 }
 
