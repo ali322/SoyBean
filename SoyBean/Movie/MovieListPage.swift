@@ -148,7 +148,7 @@ extension MovieListPage:UISearchBarDelegate{
     }
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         searchController.active = false
-        self.toggleSearchBar()
+        self.toggleSearchBar(true)
         tableview.reloadData()
     }
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
