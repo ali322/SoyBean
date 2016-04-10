@@ -151,3 +151,74 @@ struct MoviePhoto{
         return _photo
     }
 }
+
+struct CreatorDetail{
+    let id:String
+    let name:String
+    let engName:String
+    let alt:String
+    let avatars:Dictionary<String,String>
+    let summary:String
+    let birth:String
+    let born:String
+    let professions:Array<String>
+    let works:Array<CreatorMovie>
+    let photos:Array<MoviePhoto>
+    
+    static func initWith(json:JSON)->CreatorDetail{
+        
+        var _avatars:Dictionary<String,String> = [:]
+        for (k,v):(String,JSON) in json["avatars"]{
+            _avatars[k] = v.stringValue
+        }
+        var _professions:Array<String> = []
+        for (_,v):(String,JSON) in json["professions"]{
+            _professions.append(v.stringValue)
+        }
+        var _works = [CreatorMovie]()
+        for (_,v):(String,JSON) in json["works"]{
+            _works.append(CreatorMovie.initWith(v["subject"]))
+        }
+        var _photos = [MoviePhoto]()
+        for (_,v):(String,JSON) in json["works"]{
+            _photos.append(MoviePhoto.initWith(v))
+        }
+        let _creator = CreatorDetail(
+            id:json["id"].stringValue,
+            name:json["name"].stringValue,
+            engName:json["name_en"].stringValue,
+            alt:json["alt"].stringValue,
+            avatars:_avatars,
+            summary:json["summary"].stringValue,
+            birth:json["birthday"].stringValue,
+            born:json["born_place"].stringValue,
+            professions:_professions,
+            works:_works,
+            photos:_photos
+        )
+        return _creator
+    }
+}
+
+struct CreatorMovie{
+    let id:String
+    let title:String
+    let rate:Float
+    let images:[String:String]
+    let year:String
+    //    let directors:[Creator]
+    
+    static func initWith(json:JSON)->CreatorMovie{
+        
+        let _id = json["id"].stringValue
+        let _title = json["title"].stringValue
+        let _rate = json["rating"]["average"].floatValue
+        var _images:Dictionary<String,String> = [:]
+        for (key,value):(String,JSON) in json["images"]{
+            _images[key] = value.stringValue
+        }
+        let _year = json["year"].stringValue
+        let _movie = CreatorMovie(id: _id, title: _title,  rate: _rate, images: _images, year: _year )
+        return _movie
+    }
+}

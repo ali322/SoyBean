@@ -15,6 +15,7 @@ struct API{
     static let searchMovies = "\(apiHost)movie/search"
     
     static let movie = "\(apiHost)movie/subject"
+    static let creator = "\(apiHost)movie/celebrity"
 }
 
 let SCREEN_WIDTH:CGFloat = UIScreen.mainScreen().bounds.size.width

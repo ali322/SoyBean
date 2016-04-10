@@ -38,6 +38,8 @@ class MovieDetailPage: UIViewController{
     @IBOutlet weak var summary:UITextView!
     
     var movieService = MovieService()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         movieService.detailDelegate = self
@@ -45,6 +47,7 @@ class MovieDetailPage: UIViewController{
             movieService.movieDetail(id!)
         }
         castsView.dataSource = self
+        castsView.delegate = self
         castsView.collectionViewLayout = CastViewLayout()
         castsView.registerClass(CastCell.self, forCellWithReuseIdentifier: "CastCell")
     }
@@ -91,6 +94,15 @@ extension MovieDetailPage:UICollectionViewDataSource{
     }
 }
 
+extension MovieDetailPage:UICollectionViewDelegate{
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let cast = casts[indexPath.item]
+        let creatorPage = CreatorPage(nibName:"Creator",bundle: nil)
+        creatorPage.id = cast.id
+        self.navigationController?.pushViewController(creatorPage, animated: true)
+    }
+}
+
 class CastViewLayout:UICollectionViewFlowLayout{
     override init() {
         super.init()
@@ -110,24 +122,23 @@ class CastCell:UICollectionViewCell{
         }
     }
     
-    var castBtn:UIButton = UIButton()
+    var castLabel = UILabel()
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(castBtn)
+        self.addSubview(castLabel)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        castBtn.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        castBtn.frame = self.bounds
+        //        castBtn.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        castLabel.frame = self.bounds
     }
     
     func updateUI(){
         let attributedTitle = NSAttributedString(string: cast!.name, attributes: [
             NSFontAttributeName:UIFont.systemFontOfSize(13)
             ])
-        castBtn.setAttributedTitle(attributedTitle, forState: .Normal)
-        //        castBtn.setTitle(cast?.name, forState: .Normal)
+        castLabel.attributedText = attributedTitle
     }
     
     required init?(coder aDecoder: NSCoder) {

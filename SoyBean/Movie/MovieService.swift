@@ -25,9 +25,15 @@ protocol MovieDetailDelegate:class{
     func getMovieFail(err:MovieError)
 }
 
+protocol CreatorDelegate{
+    func getCreatorSuccess(data:NSData?)
+    func getCreatorFail(err:NSError)
+}
+
 struct MovieService{
     var listDelegate:MovieListDelegate?
     var detailDelegate:MovieDetailDelegate?
+    var creatorDelegate:CreatorDelegate?
     var alamofireManager:Manager{
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         let manager = Alamofire.Manager(configuration:config)
@@ -66,6 +72,16 @@ struct MovieService{
             }
         }
     }
+    
+    func creator(id:String){
+        Alamofire.request(.GET, "\(API.creator)/\(id)").responseData { (response) -> Void in
+            if response.result.error != nil{
+                self.creatorDelegate?.getCreatorFail(response.result.error!)
+            }else{
+                self.creatorDelegate?.getCreatorSuccess(response.result.value)
+            }
+        }
+    }
 }
 
 extension MovieListPage:MovieListDelegate{
@@ -100,6 +116,19 @@ extension MovieDetailPage:MovieDetailDelegate{
         }
     }
     func getMovieFail(err: MovieError) {
+        print(err)
+    }
+}
+
+extension CreatorPage:CreatorDelegate{
+    func getCreatorSuccess(data: NSData?) {
+        if let _data = data{
+            let jsonData = JSON(data:_data)
+            let _creator = CreatorDetail.initWith(jsonData)
+            self.creator = _creator
+        }
+    }
+    func getCreatorFail(err:NSError) {
         print(err)
     }
 }
