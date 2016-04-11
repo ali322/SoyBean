@@ -14,9 +14,13 @@
 		D41E5CCB1C9C20DB0072AF3E /* MovieListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CCA1C9C20DB0072AF3E /* MovieListPage.swift */; };
 		D41E5CCD1C9C20F30072AF3E /* MovieList.xib in Resources */ = {isa = PBXBuildFile; fileRef = D41E5CCC1C9C20F30072AF3E /* MovieList.xib */; };
 		D41E5CD01C9C21450072AF3E /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CCF1C9C21450072AF3E /* Constant.swift */; };
-		D41E5CD31C9C268A0072AF3E /* BookListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CD21C9C268A0072AF3E /* BookListViewController.swift */; };
+		D41E5CD31C9C268A0072AF3E /* BookListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CD21C9C268A0072AF3E /* BookListPage.swift */; };
 		D41E5CD51C9C26D50072AF3E /* BookList.xib in Resources */ = {isa = PBXBuildFile; fileRef = D41E5CD41C9C26D50072AF3E /* BookList.xib */; };
 		D41E5CD71C9C276F0072AF3E /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E5CD61C9C276F0072AF3E /* MovieService.swift */; };
+		D43CEFE31CBBBABA004E952E /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43CEFE21CBBBABA004E952E /* BookModel.swift */; };
+		D43CEFE51CBBBF4D004E952E /* BookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43CEFE41CBBBF4D004E952E /* BookService.swift */; };
+		D43CEFE71CBBC563004E952E /* BookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43CEFE61CBBC563004E952E /* BookCell.swift */; };
+		D43CEFEB1CBBC8E8004E952E /* BookCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D43CEFEA1CBBC8E8004E952E /* BookCell.xib */; };
 		D4A118591CAAB1E8000DAED5 /* MovieDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A118581CAAB1E8000DAED5 /* MovieDetailPage.swift */; };
 		D4A1185B1CAAB225000DAED5 /* MovieDetail.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4A1185A1CAAB225000DAED5 /* MovieDetail.xib */; };
 		D4B63AFB1CB80A100008F938 /* Creator.xib in Resources */ = {isa = PBXBuildFile; fileRef = D4B63AFA1CB80A100008F938 /* Creator.xib */; };
@@ -66,9 +70,13 @@
 		D41E5CCA1C9C20DB0072AF3E /* MovieListPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieListPage.swift; sourceTree = "<group>"; };
 		D41E5CCC1C9C20F30072AF3E /* MovieList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieList.xib; sourceTree = "<group>"; };
 		D41E5CCF1C9C21450072AF3E /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
-		D41E5CD21C9C268A0072AF3E /* BookListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListViewController.swift; sourceTree = "<group>"; };
+		D41E5CD21C9C268A0072AF3E /* BookListPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookListPage.swift; sourceTree = "<group>"; };
 		D41E5CD41C9C26D50072AF3E /* BookList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookList.xib; sourceTree = "<group>"; };
 		D41E5CD61C9C276F0072AF3E /* MovieService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
+		D43CEFE21CBBBABA004E952E /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
+		D43CEFE41CBBBF4D004E952E /* BookService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookService.swift; sourceTree = "<group>"; };
+		D43CEFE61CBBC563004E952E /* BookCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookCell.swift; sourceTree = "<group>"; };
+		D43CEFEA1CBBC8E8004E952E /* BookCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BookCell.xib; sourceTree = "<group>"; };
 		D4A118581CAAB1E8000DAED5 /* MovieDetailPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieDetailPage.swift; sourceTree = "<group>"; };
 		D4A1185A1CAAB225000DAED5 /* MovieDetail.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MovieDetail.xib; sourceTree = "<group>"; };
 		D4B63AFA1CB80A100008F938 /* Creator.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Creator.xib; sourceTree = "<group>"; };
@@ -181,8 +189,12 @@
 		D41E5CD11C9C26710072AF3E /* Book */ = {
 			isa = PBXGroup;
 			children = (
-				D41E5CD21C9C268A0072AF3E /* BookListViewController.swift */,
+				D41E5CD21C9C268A0072AF3E /* BookListPage.swift */,
 				D41E5CD41C9C26D50072AF3E /* BookList.xib */,
+				D43CEFE21CBBBABA004E952E /* BookModel.swift */,
+				D43CEFE41CBBBF4D004E952E /* BookService.swift */,
+				D43CEFE61CBBC563004E952E /* BookCell.swift */,
+				D43CEFEA1CBBC8E8004E952E /* BookCell.xib */,
 			);
 			path = Book;
 			sourceTree = "<group>";
@@ -362,6 +374,7 @@
 			files = (
 				D4CFC9D41C9D279700A73FAD /* MovieCell.xib in Resources */,
 				D4D07A781C9C1E13001924B0 /* LaunchScreen.storyboard in Resources */,
+				D43CEFEB1CBBC8E8004E952E /* BookCell.xib in Resources */,
 				D41E5CCD1C9C20F30072AF3E /* MovieList.xib in Resources */,
 				D41E5CD51C9C26D50072AF3E /* BookList.xib in Resources */,
 				D4B63AFB1CB80A100008F938 /* Creator.xib in Resources */,
@@ -519,15 +532,18 @@
 				D41E5CCB1C9C20DB0072AF3E /* MovieListPage.swift in Sources */,
 				D414410F1CA0102400C57922 /* LoadMore.swift in Sources */,
 				D4CFC9D21C9D24A000A73FAD /* MovieModel.swift in Sources */,
+				D43CEFE71CBBC563004E952E /* BookCell.swift in Sources */,
 				D4A118591CAAB1E8000DAED5 /* MovieDetailPage.swift in Sources */,
 				D4CFC9D01C9D244C00A73FAD /* MovieCell.swift in Sources */,
+				D43CEFE31CBBBABA004E952E /* BookModel.swift in Sources */,
 				D4B63AFD1CB80A300008F938 /* CreatorPage.swift in Sources */,
 				D4D07A6E1C9C1E13001924B0 /* AppDelegate.swift in Sources */,
 				D4CFC9CE1C9D20A000A73FAD /* Util.swift in Sources */,
 				D4CFC9CC1C9C36BB00A73FAD /* README.md in Sources */,
+				D43CEFE51CBBBF4D004E952E /* BookService.swift in Sources */,
 				D41E5CC81C9C20620072AF3E /* MainViewController.swift in Sources */,
 				D41E5CD01C9C21450072AF3E /* Constant.swift in Sources */,
-				D41E5CD31C9C268A0072AF3E /* BookListViewController.swift in Sources */,
+				D41E5CD31C9C268A0072AF3E /* BookListPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

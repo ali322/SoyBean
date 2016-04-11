@@ -47,6 +47,7 @@ class MovieListPage: UIViewController,UINavigationBarDelegate{
     var searchController:UISearchController!
     
     var q:String = ""
+    var tag:String = ""
     
     var pullUpVC = PullUpViewController()
     
@@ -143,7 +144,7 @@ extension MovieListPage:UISearchResultsUpdating{
 
 extension MovieListPage:UISearchBarDelegate{
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-        movieService.searchMovies(q)
+        movieService.searchMovies(q, tag: tag)
         searchController.active = false
     }
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
@@ -177,7 +178,11 @@ extension MovieListPage:UITableViewDelegate{
         //            print("didend dragging")
         if scrollView.contentOffset.y + scrollView.frame.height > scrollView.contentSize.height + 50{
             pullUpVC.status = .Loading
-            movieService.top250Movies(dataProvider.data.pageIndex)
+            if dataProvider.dataType == .Top250{
+                movieService.top250Movies(dataProvider.data.pageIndex)
+            }else{
+                movieService.searchMovies(q, tag: tag, pageIndex: dataProvider.data.pageIndex)
+            }
         }
     }
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

@@ -15,9 +15,10 @@ class MainViewController: UITabBarController{
         
         let movieListVC = MovieListPage(nibName:"MovieList",bundle: nil)
         let movieNavigationVC = UINavigationController(rootViewController: movieListVC)
-        let bookListVC = BookListViewController(nibName:"BookList",bundle:nil)
+        let bookListVC = BookListPage(nibName:"BookList",bundle:nil)
+        let bookNavigationVC = UINavigationController(rootViewController: bookListVC)
         self.setViewControllers([
-            movieNavigationVC,bookListVC
+            movieNavigationVC,bookNavigationVC
             ], animated: true)
         self.tabBar.items?[0].title = "电影"
         self.tabBar.items?[0].image = UIImage(named: "Film")

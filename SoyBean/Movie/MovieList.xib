@@ -31,7 +31,7 @@
                 <constraint firstAttribute="trailing" secondItem="ldj-6s-iNP" secondAttribute="trailing" id="osl-xV-R4J"/>
                 <constraint firstItem="ldj-6s-iNP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="pSh-sg-K2u"/>
             </constraints>
-            <point key="canvasLocation" x="431" y="397"/>
+            <point key="canvasLocation" x="44" y="205"/>
         </view>
     </objects>
 </document>

@@ -5,8 +5,9 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BookListViewController" customModule="SoyBean" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BookListPage" customModule="SoyBean" customModuleProvider="target">
             <connections>
+                <outlet property="tableview" destination="mhE-NU-Gim" id="3OX-u1-O46"/>
                 <outlet property="view" destination="iN0-l3-epB" id="DTT-lD-L2w"/>
             </connections>
         </placeholder>
@@ -14,7 +15,23 @@
         <view contentMode="scaleToFill" id="iN0-l3-epB">
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mhE-NU-Gim">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="oLQ-HI-tYK"/>
+                        <outlet property="delegate" destination="-1" id="vo5-yq-ceV"/>
+                    </connections>
+                </tableView>
+            </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="mhE-NU-Gim" secondAttribute="bottom" id="LxM-j2-IzW"/>
+                <constraint firstAttribute="trailing" secondItem="mhE-NU-Gim" secondAttribute="trailing" id="RH5-uJ-cIn"/>
+                <constraint firstItem="mhE-NU-Gim" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="XlB-Jg-Gt9"/>
+                <constraint firstItem="mhE-NU-Gim" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fzk-Wc-DTD"/>
+            </constraints>
             <point key="canvasLocation" x="431" y="382"/>
         </view>
     </objects>
